@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import Navbar from "../../components/Navbar/Navbar";
 import PasswordInput from "../../components/Input/PasswordInput";
 import { useState } from "react";
+import { validateEmail } from "../../utils/helper";
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -9,7 +10,19 @@ export default function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-  }
+    if (!validateEmail(email)) {
+      setError("Invalid email, Please Enter a valid Email");
+      return;
+    }
+    if (!password) {
+      setError("Password is required");
+      return;
+    }
+    setError("");
+
+    // Login API call later
+  };
+
   return (
     <>
       <Navbar />
@@ -19,7 +32,7 @@ export default function Login() {
           <form onSubmit={handleLogin}>
             <h4 className="text-3xl mb-8">Login</h4>
             <input
-              type="email"
+              type="text"
               placeholder="Email"
               className="input-box"
               value={email}
@@ -30,6 +43,8 @@ export default function Login() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
+
+            {error && <p className="text-red-500 text-xs pb-1">{error}</p>}
 
             <button type="submit" className="btn-primary">
               Login
