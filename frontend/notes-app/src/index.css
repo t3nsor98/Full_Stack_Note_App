@@ -24,4 +24,7 @@ body {
   .btn-primary {
     @apply w-full text-sm bg-primary border-[1.5px] px-5 py-3 rounded mb-4 outline-none hover:bg-blue-800 text-white;
   }
+  .icon-btn {
+    @apply text-xl text-slate-400 cursor-pointer hover:text-primary;
+  }
 }
