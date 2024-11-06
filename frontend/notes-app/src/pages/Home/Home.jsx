@@ -2,6 +2,7 @@
 import Navbar from "../../components/Navbar/Navbar";
 import NoteCard from "../../components/Cards/NoteCard";
 import { MdAdd } from "react-icons/md";
+import AddEditNotes from "./AddEditNotes";
 export default function Home() {
   return (
     <div>
@@ -28,6 +29,8 @@ export default function Home() {
         >
           <MdAdd className="text-[32px] text-white" />
         </button>
+
+        <AddEditNotes />
       </>
     </div>
   );
