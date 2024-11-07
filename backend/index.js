@@ -6,6 +6,10 @@ const mongoose = require("mongoose");
 mongoose.connect(config.connectionString);
 
 const express = require("express");
+
+const jwt = require("jsonwebtoken");
+const {authenticateToken} = require("./utilities");
+
 const cors = require("cors");
 const dotenv = require("dotenv");
 
@@ -22,6 +26,10 @@ app.use(
 app.get("/", (req, res) => {
   res.json({ data: "Hello World!" });
 });
+
+// create Account
+
+
 
 app.listen(8000);
 
