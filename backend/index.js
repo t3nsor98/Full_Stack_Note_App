@@ -1,5 +1,11 @@
-const express = require("express");
+require("dotenv").config();
+
+const config = require("./config.json");
 const mongoose = require("mongoose");
+
+mongoose.connect(config.connectionString);
+
+const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
 
