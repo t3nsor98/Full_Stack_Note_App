@@ -8,7 +8,7 @@ mongoose.connect(config.connectionString);
 const express = require("express");
 
 const jwt = require("jsonwebtoken");
-const {authenticateToken} = require("./utilities");
+const { authenticateToken } = require("./utilities");
 
 const cors = require("cors");
 const dotenv = require("dotenv");
@@ -28,11 +28,15 @@ app.get("/", (req, res) => {
 });
 
 // create Account
-
-
+app.get("/create-account", async (req, res) => {
+  const { fullName, email, password } = req.body;
+  if (!fullName || !email || !password) {
+    return res
+      .status(400)
+      .json({ error: true, message: "All fields are required" });
+  }
+});
 
 app.listen(8000);
 
 module.exports = app;
-
-
