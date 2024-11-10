@@ -1,3 +1,4 @@
+const dotenv = require("dotenv");
 require("dotenv").config();
 
 const config = require("./config.json");
@@ -5,15 +6,16 @@ const mongoose = require("mongoose");
 
 mongoose.connect(config.connectionString);
 
+// models
 const User = require("./models/user.model");
-
+const Note = require("./models/note.model");
+// express
 const express = require("express");
 
 const jwt = require("jsonwebtoken");
 const { authenticateToken } = require("./utilities");
 
 const cors = require("cors");
-// const dotenv = require("dotenv");
 
 const app = express();
 
@@ -100,6 +102,32 @@ app.post("/login", async (req, res) => {
 
 //Add Note
 
+app.post("/add-note", authenticateToken, async (req, res) => {
+  const { title, content, tags } = req.body;
+  const { user } = req.user;
+  if (!title || !content) {
+    return res
+      .status(400)
+      .json({ error: true, message: "All fields are required" });
+  }
+  try {
+    const note = new Note({
+      title,
+      content,
+      tags: tags ? tags : [],
+      userId: user._id,
+    });
+    await note.save();
+    return res.json({ error: false, message: "Note added successfully", note });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ error: true, message: "Something went wrong" });
+  }
+});
+
 app.listen(8000);
 
 module.exports = app;
+
+// console.log("Token Secret:", process.env.ACCESS_TOKEN_SECRET);
