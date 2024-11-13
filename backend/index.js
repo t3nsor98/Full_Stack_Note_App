@@ -126,6 +126,41 @@ app.post("/add-note", authenticateToken, async (req, res) => {
   }
 });
 
+app.put("/edit-note/:noteId", authenticateToken, async (req, res) => {
+  const noteId = req.params.noteId.trim();
+  const { title, content, tags, isPinned } = req.body;
+  const { user } = req.user;
+
+  if (!title && !content && !tags) {
+    return res
+      .status(400)
+      .json({ error: true, message: "No Changes Detected" });
+  }
+
+  try {
+    const note = await Note.findOne({ _id: noteId, userId: user._id });
+    if (!note) {
+      return res.status(404).json({ error: true, message: "Note not found" });
+    }
+    if (title) note.title = title;
+    if (content) note.content = content; // Update the content field
+    if (tags) note.tags = tags; // Update the tags field
+    if (isPinned) note.isPinned = isPinned; // Update the isPinned field
+
+    await note.save();
+
+    return res.json({
+      error: false,
+      note,
+      message: "Note updated successfully",
+    });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ error: true, message: "Something went wrong", error });
+  }
+});
+
 app.listen(8000);
 
 module.exports = app;
