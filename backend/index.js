@@ -71,32 +71,25 @@ app.post("/login", async (req, res) => {
   const userInfo = await User.findOne({ email: email });
 
   if (!userInfo) {
-    return res.status(404).json({ error: true, message: "User doesn't exist" });
-  }
-
-  if (userInfo.password !== password) {
-    return res.status(400).json({ error: true, message: "Password doesn't match" });
+    return res.status(400).json({ error: true, message: "User doesn't exist" });
   }
 
   if (userInfo.email == email && userInfo.password == password) {
-    const accessToken = jwt.sign(
-      { userInfo },
-      process.env.ACCESS_TOKEN_SECRET,
-      {
-        expiresIn: "1d",
-      }
-    );
+    const user = { user: userInfo };
+    const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
+      expiresIn: "1d",
+    });
 
     return res.json({
       error: false,
       accessToken,
-      user: userInfo,
+      email,
       message: "Login Successfully",
     });
   } else {
     return res
       .status(400)
-      .json({ error: true, message: "Password doesn't match" });
+      .json({ error: true, message: "Invalid Credentials" });
   }
 });
 
@@ -104,13 +97,20 @@ app.post("/login", async (req, res) => {
 app.get("/get-user", authenticateToken, async (req, res) => {
   const { user } = req.user;
   const isUser = await User.findOne({ _id: user._id });
-  
+
   if (!isUser) {
-    return res.json({ error: true, message: "User doesn't exist" });
+    return res.sendStatus(401);
   }
 
-
-  return res.json({ error: false, user: {fullName: isUser.fullName, email: isUser.email, _id: isUser._id, createdOn: isUser.createdOn} });
+  return res.json({
+    user: {
+      fullName: isUser.fullName,
+      email: isUser.email,
+      _id: isUser._id,
+      createdOn: isUser.createdOn,
+    },
+    message: "",
+  });
 });
 
 //Add Note
@@ -130,7 +130,9 @@ app.post("/add-note", authenticateToken, async (req, res) => {
       userId: user._id,
     });
     await note.save();
-    return res.json({ error: false, message: "Note added successfully", note });
+    return res
+      .status(201)
+      .json({ error: false, message: "Note added successfully", note });
   } catch (error) {
     return res
       .status(500)

@@ -35,7 +35,6 @@ export default function Login() {
     } catch (error) {
       const errorMessage =
         error.response?.data?.message || "Something went wrong";
-      console.log("Error message:", errorMessage); // Debugging line
       setError(errorMessage);
     }
   };
