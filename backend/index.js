@@ -11,7 +11,7 @@ const User = require("./models/user.model");
 const Note = require("./models/note.model");
 // express
 const express = require("express");
-
+// jwt
 const jwt = require("jsonwebtoken");
 const { authenticateToken } = require("./utilities");
 
