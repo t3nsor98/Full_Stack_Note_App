@@ -71,11 +71,11 @@ app.post("/login", async (req, res) => {
   const userInfo = await User.findOne({ email: email });
 
   if (!userInfo) {
-    return res.json({ error: true, message: "User doesn't exist" });
+    return res.status(404).json({ error: true, message: "User doesn't exist" });
   }
 
   if (userInfo.password !== password) {
-    return res.json({ error: true, message: "Password doesn't match" });
+    return res.status(400).json({ error: true, message: "Password doesn't match" });
   }
 
   if (userInfo.email == email && userInfo.password == password) {

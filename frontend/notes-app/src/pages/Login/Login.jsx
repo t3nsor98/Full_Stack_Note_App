@@ -28,23 +28,15 @@ export default function Login() {
         email: email,
         password: password,
       });
-      //handle successful login response
       if (response.data && response.data.accessToken) {
         localStorage.setItem("token", response.data.accessToken);
-        // localStorage.setItem("user", JSON.stringify(response.data.user));
         navigate("/dashboard");
       }
     } catch (error) {
-      // handle error
-      if (
-        error.response &&
-        error.response.data &&
-        error.response.data.message
-      ) {
-        setError(error.response.data.message);
-      } else {
-        setError("Something went wrong");
-      }
+      const errorMessage =
+        error.response?.data?.message || "Something went wrong";
+      console.log("Error message:", errorMessage); // Debugging line
+      setError(errorMessage);
     }
   };
 
