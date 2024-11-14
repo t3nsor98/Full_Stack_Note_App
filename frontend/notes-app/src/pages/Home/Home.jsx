@@ -40,7 +40,7 @@ export default function Home() {
   return (
     <div>
       <>
-        <Navbar />
+        <Navbar userInfo={userInfo} />
         <div className="container mx-auto">
           <div className="grid grid-cols-3 gap-4 mt-8">
             <NoteCard
