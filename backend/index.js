@@ -101,7 +101,6 @@ app.post("/login", async (req, res) => {
 });
 
 //Add Note
-
 app.post("/add-note", authenticateToken, async (req, res) => {
   const { title, content, tags } = req.body;
   const { user } = req.user;
@@ -125,7 +124,7 @@ app.post("/add-note", authenticateToken, async (req, res) => {
       .json({ error: true, message: "Something went wrong" });
   }
 });
-
+//Edit Note
 app.put("/edit-note/:noteId", authenticateToken, async (req, res) => {
   const noteId = req.params.noteId.trim();
   const { title, content, tags, isPinned } = req.body;
@@ -153,6 +152,22 @@ app.put("/edit-note/:noteId", authenticateToken, async (req, res) => {
       error: false,
       note,
       message: "Note updated successfully",
+    });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ error: true, message: "Something went wrong", error });
+  }
+});
+//get all notes
+app.get("/get-all-notes", authenticateToken, async (req, res) => {
+  const { user } = req.user;
+  try {
+    const notes = await Note.find({ userId: user._id }).sort({ isPinned: -1 });
+    return res.json({
+      error: false,
+      notes,
+      message: "Notes fetched successfully",
     });
   } catch (error) {
     return res
