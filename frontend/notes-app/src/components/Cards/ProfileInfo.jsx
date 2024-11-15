@@ -8,9 +8,9 @@ export default function ProfileInfo({ userInfo, onLogout }) {
       </div>
       <div>
         <p className="text-sm font-medium">{userInfo?.fullName}</p>
-        <button className="text-sm text-slate-700 underline" onClick={onLogout}>
+        {userInfo && <button className="text-sm text-slate-700 underline" onClick={onLogout}>
           Logout
-        </button>
+        </button>}
       </div>
     </div>
   );
