@@ -13,7 +13,8 @@ export default function SignUp() {
 
   const navigate = useNavigate();
 
-  const handleSignUp = (e) => {
+  const handleSignUp = async (e) => {
+    // Make handleSignUp async
     e.preventDefault();
     if (!name) {
       setError("Name is required");
@@ -29,24 +30,32 @@ export default function SignUp() {
       return;
     }
     setError(null);
-    // Sign Up API call later
+
     try {
-      const response = axiosInstance.post("/create-account", {
+      const response = await axiosInstance.post("/create-account", {
+        // Await the API call
         fullName: name,
         email: email,
         password: password,
       });
-      // handle successful registration response
+
+      // console.log("Full API response:", response); // Log the full response
+
       if (response.data && response.data.error) {
         setError(response.data.message);
         return;
       }
 
       if (response.data && response.data.accessToken) {
+        console.log(response.data.accessToken);
         localStorage.setItem("token", response.data.accessToken);
+
         navigate("/dashboard");
       }
     } catch (error) {
+      console.error("API Error:", error); // Log the error
+      console.error("Error response:", error.response); // Log the full error response
+
       if (
         error.response &&
         error.response.data &&
@@ -58,6 +67,7 @@ export default function SignUp() {
       }
     }
   };
+
   return (
     <>
       <Navbar />
@@ -92,7 +102,7 @@ export default function SignUp() {
               Create Account
             </button>
             <p className="text-center text-sm mt-4">
-              Already have an account? {""}
+              Already have an account?{" "}
               <Link to="/login" className="font-medium text-primary underline">
                 Login{" "}
               </Link>
