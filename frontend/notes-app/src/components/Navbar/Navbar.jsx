@@ -3,13 +3,18 @@ import ProfileInfo from "../Cards/ProfileInfo";
 import { useNavigate } from "react-router-dom";
 import SearchBar from "../SearchBar/SearchBar";
 
-export default function Navbar({ userInfo }) {
+export default function Navbar({ userInfo, onSearchNote, handleClearSearch }) {
   const [searchQuery, setSearchQuery] = useState("");
 
-  const handleSearch = () => {};
+  const handleSearch = () => {
+    if (searchQuery) {
+      onSearchNote(searchQuery);
+    }
+  };
 
   const onClearSearch = () => {
     setSearchQuery("");
+    handleClearSearch();
   };
 
   const navigate = useNavigate();
