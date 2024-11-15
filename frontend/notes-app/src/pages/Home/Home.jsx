@@ -6,6 +6,7 @@ import AddEditNotes from "./AddEditNotes";
 import Modal from "react-modal";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../utils/axiosInstance";
+// import moment from "moment";
 
 export default function Home() {
   const [openAddEditModal, setOpenAddEditModal] = useState({
@@ -17,6 +18,11 @@ export default function Home() {
   const [userInfo, setUserInfo] = useState(null);
   const [allNotes, setAllNotes] = useState([]);
   const navigate = useNavigate();
+
+  // handle edit modal
+  const handleEdit = (noteDetails) => {
+    setOpenAddEditModal({ isShown: true, type: "edit", data: noteDetails });
+  };
 
   //get user info
   const getUserInfo = async () => {
@@ -34,16 +40,16 @@ export default function Home() {
   };
   // Get all notes
   const getAllNotes = async () => {
-    try{
+    try {
       const response = await axiosInstance.get("/get-all-notes");
-      if(response.data && response.data.notes){
+      if (response.data && response.data.notes) {
         setAllNotes(response.data.notes);
       }
-    }catch(error){
+    } catch (error) {
       console.log("An unexpected error occured. Please try again", error);
-      }
     }
-
+  };
+ 
 
   useEffect(() => {
     getAllNotes();
@@ -57,16 +63,19 @@ export default function Home() {
         <Navbar userInfo={userInfo} />
         <div className="container mx-auto">
           <div className="grid grid-cols-3 gap-4 mt-8">
-            <NoteCard
-              title="meeting on 31st december"
-              date="31-12-2024"
-              content="meeting on 31st december"
-              tags="#meeting"
-              isPinned={true}
-              onEdit={() => {}}
-              onDelete={() => {}}
-              onPinNote={() => {}}
-            />
+            {allNotes.map((item, index) => (
+              <NoteCard
+                key={item._id}
+                title={item.title}
+                content={item.content}
+                date={item.createdOn}
+                tags={item.tags}
+                isPinned={item.isPinned}
+                onEdit={() => {handleEdit(item)}}
+                onDelete={() => {}}
+                onPinNote={() => {}}
+              />
+            ))}
           </div>
         </div>
 
@@ -98,8 +107,9 @@ export default function Home() {
             type={openAddEditModal.type}
             noteData={openAddEditModal.data}
             onClose={() =>
-              setOpenAddEditModal({ ...openAddEditModal, isShown: false })
+              setOpenAddEditModal({ isShown: false, type: "add", data: null })
             }
+            getAllNotes={getAllNotes}
           />
         </Modal>
       </>
