@@ -12,7 +12,6 @@ import EmptyCard from "../../components/Cards/EmptyCard";
 import AddNotesImg from "../../assets/images/add-notes.svg";
 import NoDataImg from "../../assets/images/no-data.svg";
 
-
 Modal.setAppElement("#root"); // Set root element for accessibility
 
 export default function Home() {
@@ -105,7 +104,30 @@ export default function Home() {
       console.log("An unexpected error occurred. Please try again", error);
     }
   };
-
+  // Update isPinned
+  const updateIsPinned = async (noteData) => {
+    const noteId = noteData._id;
+    try {
+      const response = await axiosInstance.put(
+        "/update-note-pinned/" + noteId,
+        {
+          isPinned: !noteData.isPinned,
+        }
+      );
+      if (response.data && !response.data.error) {
+        showToastMessage("Note updated successfully", "update");
+        getAllNotes();
+      }
+    } catch (error) {
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        console.log("An unexpected error occurred. Please try again", error);
+      }
+    }
+  };
   const handleClearSearch = () => {
     setIsSearch(false);
     getAllNotes();
@@ -122,6 +144,7 @@ export default function Home() {
         userInfo={userInfo}
         onSearchNote={onSearchNote}
         handleClearSearch={handleClearSearch}
+        updateIsPinned={updateIsPinned}
       />
       <div className="container mx-auto">
         {allNotes.length > 0 ? (
@@ -136,7 +159,7 @@ export default function Home() {
                 isPinned={item.isPinned}
                 onEdit={() => handleEdit(item)}
                 onDelete={() => deleteNote(item)}
-                onPinNote={() => {}}
+                onPinNote={() => updateIsPinned(item)}
               />
             ))}
           </div>
