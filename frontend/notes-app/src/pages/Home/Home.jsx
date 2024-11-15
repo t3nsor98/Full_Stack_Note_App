@@ -15,6 +15,7 @@ export default function Home() {
   });
 
   const [userInfo, setUserInfo] = useState(null);
+  const [allNotes, setAllNotes] = useState([]);
   const navigate = useNavigate();
 
   //get user info
@@ -31,8 +32,21 @@ export default function Home() {
       }
     }
   };
+  // Get all notes
+  const getAllNotes = async () => {
+    try{
+      const response = await axiosInstance.get("/get-all-notes");
+      if(response.data && response.data.notes){
+        setAllNotes(response.data.notes);
+      }
+    }catch(error){
+      console.log("An unexpected error occured. Please try again", error);
+      }
+    }
+
 
   useEffect(() => {
+    getAllNotes();
     getUserInfo();
     return () => {};
   }, []);
